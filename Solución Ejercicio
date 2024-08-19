@@ -1,0 +1,100 @@
+# LIBRERÍAS NECESARIAS 
+import random as rnd
+import numpy as np
+
+def ejercicio(datos):
+    # En la PRIMERA validación vamos a verificar si el dato ingresado es una lista 
+    if not isinstance(datos, list):
+        return f'ERROR: Se esperaba el resultado de una lista, contrario a esto se recibió un {type(datos).__name__}'
+    
+    # En la SEGUNDA validación vamos a verificar que todos los elementos de la lista correspondan a los valores numéricos solicitados, aleatorios entre -999 y 999
+    for num in datos: 
+        if not isinstance(num, int) or num < -999 or num > 999: 
+            return 'ERROR: La lista contiene elementos que no hacen parte a los numeros enteros entre -999 y 999 '
+    
+    # A partir de aquí voy hacer los calculos solicitados en los 6 incisios del enunciado
+
+    # 1. Determinar el promedio de todos los números
+    promedio_total = sum(datos)/len(datos)
+
+    # 2. Determinar la varianza de todos los números
+    varianza_total = np.var(datos)
+
+    # 3. Determinar el promedio de los multiplos entre 3 y 7 
+    multiplos = []
+    for num in datos:   # Valido si los números son multiplos de 3 y 7
+        if num % 3 == 0 and num % 7 == 0:
+            multiplos.append(num)
+    # Después de validar que si existe los multiplos de 3 y 7, hayo el promedio de estos
+    if len(multiplos)>0:
+        promedio_multiplos = sum(multiplos)/len(multiplos)
+    else: 
+        promedio_multiplos = 0
+    
+    # 4. Determinar cuántos números terminan en una combinación de número par e impar sin importar el orden.
+    par_impar = 0
+    for num in datos: 
+        penultimo_digito_par = (num // 10) % 2 == 0 # el penúltimo dígito (dividiendo entre 10 y tomando el módulo 2)
+        ultimo_digito_impar = (num % 10) % 2 != 0 # el último dígito (tomando el módulo 10 y luego el módulo 2)
+        
+        # Verifico si ña combinación es par o impar 
+        if (penultimo_digito_par and ultimo_digito_impar) or (not penultimo_digito_par and not ultimo_digito_impar):
+            par_impar += 1
+
+    # 5. Determinar cuántos números tienen tres dígitos y de ellos cuantos tienen los tres dígitos diferentes.
+    tres_digitos = []
+    for num in datos: 
+        # Verificar si el numero tiene al menos tres digitos
+        if abs(num) >= 100: 
+            tres_digitos.append(num)
+
+        # Contador para los numeros con tres digitos diferentes 
+        tres_digitos_diferentes = 0 
+        for num in tres_digitos:
+            # Convierto el número en una cadena y eliminar los digitos repetidos
+            digitos = set(str(abs(num)))
+
+            # Verifico si el numero tiene exactamente tres digitos diferentes 
+            if len(digitos) == 3:
+                tres_digitos_diferentes += 1
+    
+    # 6. Identifique el número más cercano al promedio y el más lejano de este.
+    mas_cercano_al_promedio = datos[0]
+    mas_lejano_al_promedio = datos[0]
+    for num in datos: 
+        distancia_al_promedio = abs(num - promedio_total)
+
+        # Actualizo el numero mas cercano al promedio
+        if abs(mas_cercano_al_promedio - promedio_total) > distancia_al_promedio:
+            mas_cercano_al_promedio = num 
+        
+        # Actualizo el numero mas lejano al promedio 
+        if abs(mas_lejano_al_promedio - promedio_total) < distancia_al_promedio:
+            mas_lejano_al_promedio = num 
+    
+    return (
+        f'El promedio total es: {promedio_total}\n'
+        f'La varianza total es: {varianza_total}\n'
+        f'El promedio de los números múltiplos de 3 y 7 es: {promedio_multiplos}\n'
+        f'La cantidad de números con una combinación de par e impar es: {par_impar}\n'
+        f'La cantidad de de números de tres dígitos diferentes es: {tres_digitos_diferentes}\n'
+        f'EL número más cercano al promedio es: {mas_cercano_al_promedio}\n'
+        f'El número más lejano al promedio es: {mas_lejano_al_promedio}'
+    )
+
+resultado_1 = ejercicio("No es una lista")
+print(resultado_1)
+
+resultado_2 = ejercicio([456, "abc", -256, 788, "xyz", 1000])
+print(resultado_2)
+
+lista_de_numeros_aleatorios = []
+
+for _ in range(10000):
+    #genero un numero aleatorio entre -999 y 999
+    numero_aleatorio = rnd.randint(-999, 999)
+    lista_de_numeros_aleatorios.append(numero_aleatorio)
+
+resultado_3 = ejercicio(lista_de_numeros_aleatorios)
+print(resultado_3)
+    
